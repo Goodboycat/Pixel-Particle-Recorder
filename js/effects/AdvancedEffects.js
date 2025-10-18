@@ -817,7 +817,305 @@ class AdvancedEffects {
         }
     }
 
-    // Continue with effects 21-50...
+    // 21. Solar Flare
+    solarFlare(x, y) {
+        for (let i = 0; i < 80; i++) {
+            const angle = (Math.random() - 0.5) * Math.PI * 0.6;
+            const speed = 3 + Math.random() * 4;
+            this.engine.createParticle({
+                x, y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                size: 2 + Math.random() * 3,
+                life: 40 + Math.random() * 30,
+                maxLife: 70,
+                color: ['#FFFF00', '#FFA500', '#FF4500', '#FF0000'][Math.floor(Math.random() * 4)],
+                alphaDecay: 0.014,
+                type: 'circle',
+                blendMode: 'lighter',
+                behaviors: [
+                    (p, dt) => {
+                        p.size += 0.05 * dt;
+                    }
+                ]
+            });
+        }
+    }
+
+    // 22. Void Collapse
+    voidCollapse(x, y) {
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 50 + Math.random() * 30;
+            const p = this.engine.createParticle({
+                x: x + Math.cos(angle) * distance,
+                y: y + Math.sin(angle) * distance,
+                vx: 0, vy: 0,
+                size: 1 + Math.random(),
+                life: 80,
+                maxLife: 80,
+                color: ['#000000', '#1a001a', '#330033'][Math.floor(Math.random() * 3)],
+                alphaDecay: 0.0125,
+                type: 'circle',
+                behaviors: [
+                    (p, dt) => {
+                        const dx = x - p.x;
+                        const dy = y - p.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist > 5) {
+                            const force = 300 / (dist * dist);
+                            p.vx += (dx / dist) * force * dt;
+                            p.vy += (dy / dist) * force * dt;
+                        }
+                    }
+                ]
+            });
+            particles.push(p);
+        }
+    }
+
+    // 23. Rainbow Trail
+    rainbowTrail(x, y) {
+        const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+        for (let i = 0; i < colors.length; i++) {
+            for (let j = 0; j < 15; j++) {
+                setTimeout(() => {
+                    const angle = Math.PI * 1.5;
+                    const offset = (i - 3) * 3;
+                    this.engine.createParticle({
+                        x: x + offset,
+                        y: y,
+                        vx: 0,
+                        vy: -3,
+                        size: 3,
+                        life: 50,
+                        maxLife: 50,
+                        color: colors[i],
+                        alphaDecay: 0.02,
+                        type: 'circle',
+                        blendMode: 'lighter'
+                    });
+                }, j * 50);
+            }
+        }
+    }
+
+    // 24. Cosmic Dust
+    cosmicDust(x, y) {
+        for (let i = 0; i < 200; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 0.5 + Math.random() * 1.5;
+            const distance = Math.random() * 40;
+            this.engine.createParticle({
+                x: x + Math.cos(angle) * distance,
+                y: y + Math.sin(angle) * distance,
+                vx: Math.cos(angle) * speed * 0.3,
+                vy: Math.sin(angle) * speed * 0.3,
+                size: 0.5 + Math.random(),
+                life: 100 + Math.random() * 80,
+                maxLife: 180,
+                color: ['#87CEEB', '#FFFFFF', '#FFD700', '#FF69B4'][Math.floor(Math.random() * 4)],
+                alpha: 0.3 + Math.random() * 0.5,
+                alphaDecay: 0.005,
+                type: 'pixel',
+                blendMode: 'lighter'
+            });
+        }
+    }
+
+    // 25. Energy Shield
+    energyShield(x, y) {
+        const radius = 30;
+        for (let i = 0; i < 60; i++) {
+            const angle = (i / 60) * Math.PI * 2;
+            this.engine.createParticle({
+                x: x + Math.cos(angle) * radius,
+                y: y + Math.sin(angle) * radius,
+                vx: 0, vy: 0,
+                size: 2,
+                life: 100,
+                maxLife: 100,
+                color: '#00FFFF',
+                alpha: 0.6,
+                alphaDecay: 0.01,
+                type: 'circle',
+                blendMode: 'lighter',
+                behaviors: [
+                    (p, dt) => {
+                        if (!p.shieldAngle) {
+                            p.shieldAngle = Math.atan2(p.y - y, p.x - x);
+                            p.pulsePhase = Math.random() * Math.PI * 2;
+                        }
+                        p.shieldAngle += 0.02 * dt;
+                        p.pulsePhase += 0.05 * dt;
+                        const r = radius + Math.sin(p.pulsePhase) * 3;
+                        p.x = x + Math.cos(p.shieldAngle) * r;
+                        p.y = y + Math.sin(p.shieldAngle) * r;
+                    }
+                ]
+            });
+        }
+    }
+
+    // 26. Toxic Cloud
+    toxicCloud(x, y) {
+        for (let i = 0; i < 60; i++) {
+            setTimeout(() => {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 15;
+                this.engine.createParticle({
+                    x: x + Math.cos(angle) * distance,
+                    y: y + Math.sin(angle) * distance,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: -0.3 - Math.random() * 0.4,
+                    size: 3 + Math.random() * 3,
+                    life: 80 + Math.random() * 40,
+                    maxLife: 120,
+                    color: ['#00FF00', '#32CD32', '#ADFF2F', '#9ACD32'][Math.floor(Math.random() * 4)],
+                    alpha: 0.5 + Math.random() * 0.3,
+                    alphaDecay: 0.008,
+                    type: 'circle',
+                    blendMode: 'lighter',
+                    behaviors: [
+                        (p, dt) => {
+                            p.vx += Math.sin(p.y * 0.1) * 0.02 * dt;
+                        }
+                    ]
+                });
+            }, i * 30);
+        }
+    }
+
+    // 27. Electric Shock
+    electricShock(x, y) {
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                // Main bolt
+                for (let j = 0; j < 20; j++) {
+                    this.engine.createParticle({
+                        x: x + (Math.random() - 0.5) * 10,
+                        y: y + j * 3,
+                        vx: (Math.random() - 0.5) * 2,
+                        vy: (Math.random() - 0.5) * 2,
+                        size: 2,
+                        life: 8,
+                        maxLife: 8,
+                        color: ['#FFFFFF', '#00FFFF', '#87CEFA'][Math.floor(Math.random() * 3)],
+                        alphaDecay: 0.125,
+                        type: 'pixel',
+                        blendMode: 'lighter'
+                    });
+                }
+            }, i * 100);
+        }
+    }
+
+    // 28. Sakura Petals
+    sakuraPetals(x, y) {
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                this.engine.createParticle({
+                    x: x + (Math.random() - 0.5) * 60,
+                    y: y - 20 - Math.random() * 20,
+                    vx: (Math.random() - 0.5) * 0.8,
+                    vy: 0.5 + Math.random() * 0.5,
+                    size: 2 + Math.random(),
+                    life: 120 + Math.random() * 60,
+                    maxLife: 180,
+                    color: ['#FFB7C5', '#FFC0CB', '#FADADD'][Math.floor(Math.random() * 3)],
+                    alphaDecay: 0.006,
+                    type: 'triangle',
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.05,
+                    behaviors: [
+                        (p, dt) => {
+                            p.vx += Math.sin(p.y * 0.05) * 0.02 * dt;
+                        }
+                    ]
+                });
+            }, i * 60);
+        }
+    }
+
+    // 29. Fireworks
+    fireworks(x, y) {
+        // Launch trail
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                this.engine.createParticle({
+                    x: x,
+                    y: y + i * 2,
+                    vx: 0,
+                    vy: -5,
+                    size: 2,
+                    life: 15,
+                    maxLife: 15,
+                    color: '#FFA500',
+                    alphaDecay: 0.067,
+                    type: 'circle',
+                    blendMode: 'lighter'
+                });
+            }, i * 20);
+        }
+
+        // Explosion
+        setTimeout(() => {
+            const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'];
+            const explosionColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            for (let i = 0; i < 80; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 3;
+                this.engine.createParticle({
+                    x: x,
+                    y: y - 40,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: 2 + Math.random(),
+                    life: 50 + Math.random() * 30,
+                    maxLife: 80,
+                    color: explosionColor,
+                    alphaDecay: 0.0125,
+                    type: 'star',
+                    blendMode: 'lighter'
+                });
+            }
+        }, 400);
+    }
+
+    // 30. Hologram Glitch
+    hologramGlitch(x, y) {
+        for (let layer = 0; layer < 3; layer++) {
+            const offsetY = layer * 8;
+            const alpha = 1 - layer * 0.3;
+            
+            for (let i = 0; i < 30; i++) {
+                this.engine.createParticle({
+                    x: x + (Math.random() - 0.5) * 40,
+                    y: y + offsetY + (Math.random() - 0.5) * 20,
+                    vx: (Math.random() - 0.5) * 1,
+                    vy: (Math.random() - 0.5) * 1,
+                    size: 1 + Math.random() * 2,
+                    life: 20 + Math.random() * 20,
+                    maxLife: 40,
+                    color: ['#00FFFF', '#FF00FF', '#00FF00'][Math.floor(Math.random() * 3)],
+                    alpha: alpha,
+                    alphaDecay: 0.025,
+                    type: 'pixel',
+                    blendMode: 'lighter',
+                    behaviors: [
+                        (p, dt) => {
+                            if (Math.random() < 0.1) {
+                                p.x += (Math.random() - 0.5) * 10;
+                                p.color = ['#00FFFF', '#FF00FF', '#00FF00'][Math.floor(Math.random() * 3)];
+                            }
+                        }
+                    ]
+                });
+            }
+        }
+    }
     
     // Helper function to get all available effects
     getAvailableEffects() {
@@ -841,7 +1139,17 @@ class AdvancedEffects {
             { name: 'Meteor Shower', id: 'meteorShower', category: 'cosmic' },
             { name: 'Frost Nova', id: 'frostNova', category: 'elemental' },
             { name: 'Magnetic Field', id: 'magneticField', category: 'quantum' },
-            { name: 'Warp Speed', id: 'warpSpeed', category: 'cosmic' }
+            { name: 'Warp Speed', id: 'warpSpeed', category: 'cosmic' },
+            { name: 'Solar Flare', id: 'solarFlare', category: 'cosmic' },
+            { name: 'Void Collapse', id: 'voidCollapse', category: 'quantum' },
+            { name: 'Rainbow Trail', id: 'rainbowTrail', category: 'magic' },
+            { name: 'Cosmic Dust', id: 'cosmicDust', category: 'cosmic' },
+            { name: 'Energy Shield', id: 'energyShield', category: 'magic' },
+            { name: 'Toxic Cloud', id: 'toxicCloud', category: 'elemental' },
+            { name: 'Electric Shock', id: 'electricShock', category: 'elemental' },
+            { name: 'Sakura Petals', id: 'sakuraPetals', category: 'nature' },
+            { name: 'Fireworks', id: 'fireworks', category: 'explosive' },
+            { name: 'Hologram Glitch', id: 'hologramGlitch', category: 'tech' }
         ];
     }
 

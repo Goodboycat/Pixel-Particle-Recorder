@@ -3,10 +3,3 @@ Activate recording - activate desired particle effect - stop recording - press s
 
 link:
 https://goodboycat.github.io/Pixel-Particle-Recorder/
-
-alternative:
-https://codepen.io/Goodkitty/full/dPYOKgV
-
-
-older version:
-https://codepen.io/Goodkitty/full/KwdNQYK

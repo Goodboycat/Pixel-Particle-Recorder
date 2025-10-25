@@ -272,3 +272,14 @@ button.danger:hover {
         height: auto;
     }
 }
+
+/* Recording button styles */
+button.recording {
+    background: #ff0000 !important;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
